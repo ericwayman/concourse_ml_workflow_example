@@ -9,4 +9,4 @@ inputs:
 - name: resource-files
 
 run:
-  path: resource-files/home/03_pipeline_train_keras_model_push_results/push_results.sh
+  path: resource-files/03_pipeline_train_keras_model_push_results/push_results.sh
