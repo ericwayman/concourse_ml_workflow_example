@@ -1,0 +1,13 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: datitran/cf-demo}
+
+inputs:
+- name: resource-files
+  path: home
+
+run:
+  path: home/03_pipeline_train_keras_model_push_results/push_results.sh
