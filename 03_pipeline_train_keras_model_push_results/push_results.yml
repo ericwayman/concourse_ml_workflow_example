@@ -9,5 +9,8 @@ inputs:
 - name: resource-files
 - name: resource-gist
 
+outputs:
+  - name: updated_gist
+
 run:
   path: resource-files/03_pipeline_train_keras_model_push_results/push_results.sh
