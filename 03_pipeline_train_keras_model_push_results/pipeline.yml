@@ -3,7 +3,8 @@ resources:
 - name: resource-files
   type: git
   source: 
-    uri: https://github.com/eriwayman/ml_workflow_example/
+    uri: https://github.com/ericwayman/concourse_ml_workflow_example.git
+    branch: master
 - name: resource-gist
   type: git
   source:
@@ -12,11 +13,12 @@ resources:
     private_key: {{github-private-key}}
 
 jobs:
-- name: train_model_save_results
+- name: job-train_save_results
+  serial: true 
   plan:
   - get: resource-files
   - get: resource-gist
-  - task: 
-    file: resource-files/03_pipeline_train_keras_model_push-results/push_results.yml
+  - task: train_save_results
+    file: resource-files/03_pipeline_train_keras_model_push_results/push_results.yml
   - put: resource-gist
     params: {repository: updated_gist}

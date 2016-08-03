@@ -7,7 +7,6 @@ image_resource:
 
 inputs:
 - name: resource-files
-  path: home
 
 run:
-  path: home/03_pipeline_train_keras_model_push_results/push_results.sh
+  path: resource-files/home/03_pipeline_train_keras_model_push_results/push_results.sh
