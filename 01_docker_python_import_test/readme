@@ -1,0 +1,15 @@
+A basic task script test
+
+1. Pull the docker image from 
+https://github.com/datitran/cf-demo
+This contain has python packages installed.  Included numpy
+
+2.  The task runs test.py in this image.  The test imports numpy and prints a numpy array.  This simply checks that the container has successfully imported numpy
+
+Usage.  In this directory run:
+$fly -t [target_name] e -c task_python_script.yml 
+
+where [target_name] is the target we have run up.
+The task specified in task_python_script.yml 
+pulls the docker image.  It then copies this local directory into the image and renames it home.
+test.sh, which calls test.py is runin the image.

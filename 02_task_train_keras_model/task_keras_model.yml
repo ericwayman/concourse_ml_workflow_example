@@ -1,0 +1,14 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: datitran/cf-demo}
+
+inputs:
+- name: 02_task_train_keras_model
+  path: home
+
+run:
+  path: /bin/sh
+  args: [-c,python ./home/train_keras_mlp_predict.py]

@@ -1,0 +1,13 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: datitran/cf-demo}
+
+inputs:
+- name: 01_docker_python_import_test
+  path: home
+
+run:
+  path: ./home/test.sh
