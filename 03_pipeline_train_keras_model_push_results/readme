@@ -1,0 +1,24 @@
+usage: 
+
+$fly sp -t [target_name] -c pipeline.yml -p [pipeline_name] -n -l [full_path_to_config]
+
+example config:
+
+gist-url: git@gist.github.com:123456.git
+github-private-key:   |-
+  -----BEGIN RSA PRIVATE KEY-----
+    ....................
+  -----END RSA PRIVATE KEY-----
+
+Credentials should be configured to contain your private key and a gist with a single file: model_results
+
+
+Pipeline steps:
+
+1. Pull scripts from
+https://github.com/ericwayman/concourse_ml_workflow_example.git
+
+2. Pull the docker image from 
+https://github.com/datitran/cf-demo
+
+3. train model and push results to the gist.
