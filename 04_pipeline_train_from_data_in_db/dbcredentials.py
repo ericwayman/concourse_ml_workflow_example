@@ -7,21 +7,12 @@ import yaml
 
 class DBCredentials: 
 
-    def __init__(self,credential_file):
-        """
-        params ::credential_file::string The full path of the user credential file
-        """
-        #Read database credentials from user supplied file
-        self.credential_file = credential_file
-        with open(self.credential_file,'r') as stream:
-            yml = yaml.load(stream)
-
-        #host, port, user, database, password
-        self.host = yml['host']
-        self.port = yml['port']
-        self.user = yml['user']
-        self.database = yml['database']
-        self.password = yml['password']
+    def __init__(self,database, host, port, user, password):
+        self.database = database
+        self.host = host
+        self.port = port
+        self.user = user
+        self.password = password
 
     @property
     def psyopg2_connection_string(self):

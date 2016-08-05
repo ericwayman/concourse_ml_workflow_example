@@ -1,0 +1,23 @@
+---
+resources:
+- name: resource_files
+  type: git
+  source: 
+    uri: https://github.com/ericwayman/concourse_ml_workflow_example.git
+    branch: master
+
+jobs:
+- name: push_data_to_db
+  public: true
+  plan:
+  - get: resource_files
+  task: task_push_data_to_db
+  config:
+  image_resource:
+    type: docker-image
+    source: {repository: ericwayman/concourse-demo, tag: v2}
+  inputs:
+  - name: 
+  run: 
+    path: /bin/sh
+    args: [-c,python resource_files/04_pipeline_train_from_data_in_db/push_data_to_db.py,{{database}}, {{host}}, {{port}}, {{user}}, {{password}}]
