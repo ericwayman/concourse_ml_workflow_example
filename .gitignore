@@ -1,2 +1,4 @@
+*.pyc
+
 db_credentials.yml
 ml_workflow_credentials.yml

@@ -22,4 +22,4 @@ jobs:
       - name: resource_files
       run: 
         path: /bin/sh
-        args: [-c,python resource_files/04_pipeline_train_from_data_in_db/push_data_to_db.py,{{database}}, {{host}}, {{port}}, {{user}}, {{password}}]
+        args: [-c,python resource_files/04_pipeline_train_from_data_in_db/push_data_to_db.py {{database}} {{host}} {{port}} {{user}} {{password}}]
