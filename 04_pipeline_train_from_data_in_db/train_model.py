@@ -76,7 +76,7 @@ if __name__ == "__main__":
     X_test, y_test = load_data(engine, schema = 'dev', table = 'test')
     y_train = np_utils.to_categorical(y_train, NB_CLASSES)
     y_test = np_utils.to_categorical(y_test, NB_CLASSES)
-    logfile = "model.log"
+    logfile = "new_log_dir/model.log"
     with open(logfile,'w') as f:
       sys.stdout = f
       evaluate_model(X_train, X_test, y_train, y_test, BATCH_SIZE, NB_EPOCH)
