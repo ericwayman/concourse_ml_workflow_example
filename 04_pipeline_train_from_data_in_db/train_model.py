@@ -53,7 +53,6 @@ parser.add_argument('h', type=str,help='host')
 parser.add_argument('p', type=str,help='port')
 parser.add_argument('u', type=str,help='user')
 parser.add_argument('pw', type=str,help='password')
-parser.add_argument('f', type=str,help='param_file')
 
 if __name__ == "__main__":
     args = parser.parse_args()
@@ -67,10 +66,8 @@ if __name__ == "__main__":
     connection = engine.connect()
 
     #load parameters
-    with open(args.f,'r') as stream:
-        parameters = yaml.load(stream)
-    BATCH_SIZE = parameters['BATCH_SIZE']
-    NB_EPOCH = parameters['NB_EPOCH']
+    BATCH_SIZE = os.environ.get('BATCH_SIZE')
+    NB_EPOCH = os.environ.get('NB_EPOCH')
 
     X_train, y_train = load_data(engine, schema = 'dev', table = 'train')
     X_test, y_test = load_data(engine, schema = 'dev', table = 'test')
