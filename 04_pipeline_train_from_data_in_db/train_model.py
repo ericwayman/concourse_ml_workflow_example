@@ -65,9 +65,9 @@ if __name__ == "__main__":
     engine = create_engine(credentials.sqlalchemy_connection_string)
     connection = engine.connect()
 
-    #load parameters
-    BATCH_SIZE = os.environ.get('BATCH_SIZE')
-    NB_EPOCH = os.environ.get('NB_EPOCH')
+    #fetch training parameters
+    BATCH_SIZE = int(os.environ.get('BATCH_SIZE'))
+    NB_EPOCH = int(os.environ.get('NB_EPOCH'))
 
     X_train, y_train = load_data(engine, schema = 'dev', table = 'train')
     X_test, y_test = load_data(engine, schema = 'dev', table = 'test')
