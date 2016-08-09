@@ -60,6 +60,9 @@ jobs:
     - get: model_logs
 
   - task: task_train_model_save_logs
+    params:
+      BATCH_SIZE: {{BATCH_SIZE}}
+      NB_EPOCH: {{NB_EPOCH}}
     config:
       platform: linux
       image_resource:
@@ -72,7 +75,8 @@ jobs:
       - name: new_log_dir
       run: 
         path: /bin/sh
-        args: [-c,python train_model_repo/04_pipeline_train_from_data_in_db/train_model.py {{database}} {{host}} {{port}} {{user}} {{password}} parameter_files/parameters.yml]
+        args: [-c,python train_model_repo/04_pipeline_train_from_data_in_db/train_model.py {{database}} {{host}} {{port}} {{user}} {{password}}]
+
   - task: commit_file_to_log_repo
     config:
       platform: linux
@@ -83,12 +87,11 @@ jobs:
       - name: new_log_dir
       - name: model_logs
       outputs:
-      - name: hello
+      - name: updated_model_logs
       run: 
         path: /bin/sh
         args:
         - -c
-        - cp -a model_logs/. hello/ && cp new_log_dir/model.log hello && cd hello && git add . && git commit -m "test"
+        - cp -a model_logs/. updated_model_logs/ && cp new_log_dir/model.log updated_model_logs && cd updated_model_logs && git add . && git commit -m "test"
   - put: model_logs
-    params:
-      repository: hello
+    params: {repository: updated_model_logs}
