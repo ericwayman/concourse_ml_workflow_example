@@ -1,17 +1,43 @@
 ---
 resources:
-- name: resource_files
+- name: push_data_to_db_repo
   type: git
-  source: 
+  source:
     uri: https://github.com/ericwayman/concourse_ml_workflow_example.git
     branch: master
+    paths:
+      - 04_pipeline_train_from_data_in_db/__init__.py
+      - 04_pipeline_train_from_data_in_db/dbcredentials.py
+      - 04_pipeline_train_from_data_in_db/push_data_to_db.py
+
+- name: train_model_repo
+  type: git
+  source:
+    uri: https://github.com/ericwayman/concourse_ml_workflow_example.git
+    branch: master
+    paths:
+      - 04_pipeline_train_from_data_in_db/__init__.py
+      - 04_pipeline_train_from_data_in_db/dbcredentials.py
+      - 04_pipeline_train_from_data_in_db/train_model.py
+
+- name: parameter_files
+  type: git
+  source:
+    uri: https://github.com/ericwayman/parameters_concourse_ml_workflow_example.git
+    branch: master
+
+- name: model_logs
+  type: git
+  source:
+    uri: git@github.com:ericwayman/model_logs_concourse_ml_workflow_example.git
+    branch: master
+    private_key: {{github-private-key}}
 
 jobs:
 - name: push_data_to_db
   public: true
   plan:
-  - get: resource_files
-
+  - get: push_data_to_db_repo
   - task: task_push_data_to_db
     config:
       platform: linux
@@ -19,7 +45,50 @@ jobs:
         type: docker-image
         source: {repository: ericwayman/concourse-demo, tag: v2}
       inputs:
-      - name: resource_files
+      - name: push_data_to_db_repo
       run: 
         path: /bin/sh
-        args: [-c,python resource_files/04_pipeline_train_from_data_in_db/push_data_to_db.py {{database}} {{host}} {{port}} {{user}} {{password}}]
+        args: [-c,python push_data_to_db_repo/04_pipeline_train_from_data_in_db/push_data_to_db.py {{database}} {{host}} {{port}} {{user}} {{password}}]
+
+- name: train_model_save_logs
+  public: true
+  plan:
+  - aggregate:
+    - get: train_model_repo
+    - get: parameter_files
+      trigger: true
+    - get: model_logs
+
+  - task: task_train_model_save_logs
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: ericwayman/concourse-demo, tag: v2}
+      inputs:
+      - name: train_model_repo
+      - name: parameter_files
+      outputs:
+      - name: new_log_dir
+      run: 
+        path: /bin/sh
+        args: [-c,python train_model_repo/04_pipeline_train_from_data_in_db/train_model.py {{database}} {{host}} {{port}} {{user}} {{password}} parameter_files/parameters.yml]
+  - task: commit_file_to_log_repo
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source: {repository: concourse/git-resource}
+      inputs:
+      - name: new_log_dir
+      - name: model_logs
+      outputs:
+      - name: hello
+      run: 
+        path: /bin/sh
+        args:
+        - -c
+        - cp -a model_logs/. hello/ && cp new_log_dir/model.log hello && cd hello && git add . && git commit -m "test"
+  - put: model_logs
+    params:
+      repository: hello
