@@ -67,8 +67,8 @@ if __name__ == "__main__":
 
     #fetch schema and table names
     SCHEMA = os.environ.get('SCHEMA')
-    TEST_TABLE: os.environ.get('TEST_TABLE')
-    TRAIN_TABLE: os.environ.get('TRAIN_TABLE')
+    TEST_TABLE =  os.environ.get('TEST_TABLE')
+    TRAIN_TABLE = os.environ.get('TRAIN_TABLE')
 
     #fetch training parameters
     BATCH_SIZE = int(os.environ.get('BATCH_SIZE'))
