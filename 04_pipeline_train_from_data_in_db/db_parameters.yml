@@ -1,0 +1,4 @@
+TRAIN_TABLE: train
+TEST_TABLE: test
+SCHEMA: dev
+TABLE_NAME_FILE: table_names.yml

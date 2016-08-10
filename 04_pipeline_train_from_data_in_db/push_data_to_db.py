@@ -4,6 +4,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 import numpy as np
 from keras.datasets import mnist
+import os
 
 def transform_data(data):
     """Reshape/transform the MNIST dataset."""
@@ -35,6 +36,11 @@ if __name__ == "__main__":
     engine = create_engine(credentials.sqlalchemy_connection_string)
     connection = engine.connect()
 
+    #fetch schema and table names
+    SCHEMA = os.environ.get('SCHEMA')
+    TEST_TABLE = os.environ.get('TEST_TABLE')
+    TRAIN_TABLE = os.environ.get('TRAIN_TABLE')
+
     #fetch data
     X_train, X_test, y_train, y_test = transform_data(mnist.load_data())
     print("loaded data")
@@ -42,20 +48,19 @@ if __name__ == "__main__":
     df_train = pd.DataFrame(X_train).iloc[:100,:]
     df_train['target'] = y_train[:100]
     print("configured df_train")
-    connection.execute("DROP TABLE IF EXISTS dev.train;")
+    connection.execute("DROP TABLE IF EXISTS {schema}.{train_table};".format(schema = SCHEMA, train_table = TRAIN_TABLE))
     print('dropped train table')
 
-    #remove hard coding and take schema and table as arguments
-    df_train.to_sql(name='train',schema='dev',con=engine)
+    df_train.to_sql(name=TRAIN_TABLE,schema=SCHEMA,con=engine)
     print('wrote train data to sql')
     
     #add test data to database
     df_test = pd.DataFrame(X_test).iloc[:100,:]
     df_test['target'] = y_test[:100]
     print('configured df_test')
-    connection.execute("DROP TABLE IF EXISTS dev.test;")
+    connection.execute("DROP TABLE IF EXISTS {schema}.{test_table};".format(schema = SCHEMA, test_table = TEST_TABLE))
     print('dropped test table')
-    df_test.to_sql(name='test',schema='dev',con=engine)
+    df_test.to_sql(name=TEST_TABLE,schema=SCHEMA,con=engine)
     print('wrote test data to sql')
     connection.close()
     print('done')

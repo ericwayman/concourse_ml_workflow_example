@@ -65,12 +65,17 @@ if __name__ == "__main__":
     engine = create_engine(credentials.sqlalchemy_connection_string)
     connection = engine.connect()
 
+    #fetch schema and table names
+    SCHEMA = os.environ.get('SCHEMA')
+    TEST_TABLE: os.environ.get('TEST_TABLE')
+    TRAIN_TABLE: os.environ.get('TRAIN_TABLE')
+
     #fetch training parameters
     BATCH_SIZE = int(os.environ.get('BATCH_SIZE'))
     NB_EPOCH = int(os.environ.get('NB_EPOCH'))
 
-    X_train, y_train = load_data(engine, schema = 'dev', table = 'train')
-    X_test, y_test = load_data(engine, schema = 'dev', table = 'test')
+    X_train, y_train = load_data(engine, schema = SCHEMA, table = TRAIN_TABLE)
+    X_test, y_test = load_data(engine, schema = SCHEMA, table = TEST_TABLE)
     y_train = np_utils.to_categorical(y_train, NB_CLASSES)
     y_test = np_utils.to_categorical(y_test, NB_CLASSES)
     logfile = "new_log_dir/model.log"
