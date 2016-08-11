@@ -33,12 +33,27 @@ resources:
     branch: master
     private_key: {{github-private-key}}
 
+- name: train_test_tables_repo
+  type: git
+  source:
+    uri: git@github.com:ericwayman/model_logs_concourse_ml_workflow_example.git
+    branch: master
+    paths:
+      - 04_pipeline_train_from_data_in_db/train_test_tables/
+    private_key: {{github-private-key}}
+
 jobs:
 - name: push_data_to_db
   public: true
   plan:
-  - get: push_data_to_db_repo
+  - aggregate:
+    - get: push_data_to_db_repo
+    - get: train_test_tables_repo
   - task: task_push_data_to_db
+    params:
+      TRAIN_TABLE: {{TRAIN_TABLE}}
+      TEST_TABLE: {{TEST_TABLE}}
+      SCHEMA: {{SCHEMA}}
     config:
       platform: linux
       image_resource:
@@ -46,9 +61,19 @@ jobs:
         source: {repository: ericwayman/concourse-demo, tag: v2}
       inputs:
       - name: push_data_to_db_repo
-      run: 
+      run:
         path: /bin/sh
         args: [-c,python push_data_to_db_repo/04_pipeline_train_from_data_in_db/push_data_to_db.py {{database}} {{host}} {{port}} {{user}} {{password}}]
+  - task: task_commit_table_names_file_to_repo
+    params:
+      TRAIN_TABLE: {{TRAIN_TABLE}}
+      TEST_TABLE: {{TEST_TABLE}}
+      SCHEMA: {{SCHEMA}}
+      TABLE_NAME_FILE: {{TABLE_NAME_FILE}}
+    file: task_commit_table_names_file_to_repo.yml
+  - put: train_test_tables_repo
+    params: {repository: new_table_names}
+
 
 - name: train_model_save_logs
   public: true
@@ -63,6 +88,10 @@ jobs:
     params:
       BATCH_SIZE: {{BATCH_SIZE}}
       NB_EPOCH: {{NB_EPOCH}}
+      #train, test_table and schema need to be set by grabbing them from train_test_tables_repo and setting as environment variables
+      TRAIN_TABLE: {{TRAIN_TABLE}}
+      TEST_TABLE: {{TEST_TABLE}}
+      SCHEMA: {{SCHEMA}}
     config:
       platform: linux
       image_resource:
