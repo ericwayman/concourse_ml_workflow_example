@@ -3,7 +3,7 @@
 set -e # fail fast
 set -x # print commands
 
-git clone train_test_tables_repo updated_train_test_tables_repo
+git clone push_data_to_db_repo updated_push_data_to_db_repo
 
 cd updated_train_test_tables_repo/
 echo -e "SCHEMA: $SCHEMA\nTRAIN_TABLE: $TRAIN_TABLE\nTEST_TABLE: $TEST_TABLE" > $TABLE_NAME_FILE
