@@ -7,6 +7,6 @@ image_resource:
 inputs:
 - name: push_data_to_db_repo
 outputs:
-- name: updated_train_test_tables_repo
+- name: updated_push_data_to_db_repo
 run: 
   path: push_data_to_db_repo/04_pipeline_train_from_data_in_db/make_table_names_yaml.sh
