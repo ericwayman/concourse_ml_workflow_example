@@ -10,4 +10,4 @@ inputs:
 outputs:
 - name: updated_train_test_tables_repo
 run: 
-  path: push_data_to_db_repo/04_pipeline_train_from_data_in_db/make_table_names_yml.sh
+  path: push_data_to_db_repo/04_pipeline_train_from_data_in_db/make_table_names_yaml.sh
