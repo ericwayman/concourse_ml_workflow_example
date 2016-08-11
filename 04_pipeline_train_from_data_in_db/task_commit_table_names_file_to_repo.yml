@@ -6,7 +6,6 @@ image_resource:
   source: {repository: concourse/git-resource}
 inputs:
 - name: push_data_to_db_repo
-- name: train_test_tables_repo
 outputs:
 - name: updated_train_test_tables_repo
 run: 
